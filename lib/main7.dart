@@ -17,15 +17,52 @@ class MyApp extends StatelessWidget {
 
 class RandomWords extends StatefulWidget {
   @override
-  _RandomWordsState createState() => _RandomWordsState();
+  _RandomWordsState createState() {
+    print("1.createState");
+    return _RandomWordsState();
+  }
 }
 
 class _RandomWordsState extends State<RandomWords> {
   @override
-  final _suggestions = <WordPair>[];                 // NEW
-  final _biggerFont = const TextStyle(fontSize: 18); // NEW
+  final _suggestions = <WordPair>[];
+  final _saved = <WordPair>{};     // NEW
+  final _biggerFont = TextStyle(fontSize: 18.0);
+
+
+  @override
+  initState() {
+    super.initState();
+    print("1a. mounted: $mounted");
+    print("2. initState");
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print("3. didChangeDependencies");
+  }
+
+  @override
+  void didUpdateWidget(covariant RandomWords oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print("5. didUpdateWidget");
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
+    print("7. deactivate");
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    print("8. dispose");
+  }
 
   Widget build(BuildContext context) {
+    print("4. build");
     return Scaffold (                     // Add from here...
       appBar: AppBar(
         title: Text('Startup Name Generator'),
@@ -35,11 +72,27 @@ class _RandomWordsState extends State<RandomWords> {
   }
 
   Widget _buildRow(WordPair pair) {
+    final alreadySaved = _saved.contains(pair);
     return ListTile(
       title: Text(
         pair.asPascalCase,
         style: _biggerFont,
       ),
+      trailing: Icon(
+        alreadySaved ? Icons.favorite : Icons.favorite_border,
+        color: alreadySaved ? Colors.red : null,
+      ),
+      onTap: () {      // NEW lines from here...
+        setState(() {
+          print("6. setState");
+
+          if (alreadySaved) {
+            _saved.remove(pair);
+          } else {
+            _saved.add(pair);
+          }
+        });
+      },               // ... to here.
     );
   }
 
